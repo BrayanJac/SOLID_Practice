@@ -1,32 +1,44 @@
+//Abstracción para clientes HTTP
+export interface HttpClient {
+    get(url: string): Promise<any>;
+}
 
-/**
- * VIOLACIÓN AL PRINCIPIO DE ABIERTO/CERRADO (OCP)
- * 
- * En este módulo de noticias de la reserva, el servicio depende directamente
- * de la librería externa 'axios'. Si quisiéramos usar 'fetch' u otra librería,
- * tendríamos que modificar este código interno.
- */
+//Implementación concreta usando Fetch API
+export class FetchHttpClient implements HttpClient {
+    async get(url: string): Promise<any> {
+        const response = await fetch(url);
+        return response.json();
+    }
+}
 
-import axios from 'axios';
+//Implementación concreta simulada para pruebas
+export class MockHttpClient implements HttpClient {
+    async get(url: string): Promise<any> {
+        console.log(`Simulando petición a ${url}`);
+        if (url.includes('posts')) {
+            return [{ id: 1, title: 'Noticia simulada' }];
+        }
+        if (url.includes('photos')) {
+            return [{ id: 1, url: 'https://example.com/photo.jpg' }];
+        }
+        return [];
+    }
+}
 
 export class NewsService {
+    constructor(private readonly httpClient: HttpClient) {}
 
-    // VIOLACIÓN: Dependencia rígida de axios.get()
-    // Si la API cambia o queremos cambiar de cliente HTTP, este código debe "abrirse" para modificación.
     async getLatestNews() {
         console.log('Obteniendo noticias de la reserva biológica...');
-        const resp = await axios.get('https://jsonplaceholder.typicode.com/posts');
-        return resp.data;
+        return this.httpClient.get('https://jsonplaceholder.typicode.com/posts');
     }
-
 }
 
 export class PhotosService {
+    constructor(private readonly httpClient: HttpClient) {}
 
     async getGallery() {
-        // Otra violación repetida: si mañana axios desaparece, tenemos que buscar todos los archivos que lo usan.
-        const resp = await axios.get('https://jsonplaceholder.typicode.com/photos');
-        return resp.data;
+        console.log('Obteniendo galería de fotos de la reserva...');
+        return this.httpClient.get('https://jsonplaceholder.typicode.com/photos');
     }
-
 }
