@@ -1,39 +1,73 @@
-
-/**
- * VIOLACIÓN AL PRINCIPIO DE SEGREGACIÓN DE INTERFAZ (ISP)
- * 
- * El catálogo de fauna define una interfaz "gorda" que obliga a las aves 
- * a implementar métodos que no les corresponden según su naturaleza.
- */
-
-interface Bird {
+// Interfaz base para todas las aves
+export interface IBird {
     eat(): void;
+}
+
+// Interfaz para aves que pueden volar
+export interface IFlyingBird extends IBird {
     fly(): void;
+}
+
+// Interfaz para aves que pueden nadar
+export interface ISwimmingBird extends IBird {
     swim(): void;
 }
 
-export class Toucan implements Bird {
-    public eat() { console.log('El Tucán está comiendo frutas.'); }
-    public fly() { console.log('El Tucán vuela sobre la selva.'); }
-    public swim() { console.log('El Tucán no suele nadar, pero implemento el método vacío.'); }
-}
-
-export class Hummingbird implements Bird {
-    public eat() { console.log('El Colibrí busca néctar.'); }
-    public fly() { console.log('El Colibrí aletea rápidamente.'); }
-    public swim() { throw new Error('Un colibrí no puede nadar'); }
-}
-
-/**
- * VIOLACIÓN FLAGRANTE: El Avestruz es un ave, pero NO VUELA.
- * La interfaz Bird le obliga a implementar fly(), causando una excepción en tiempo de ejecución
- * o un comportamiento inesperado.
- */
-export class Ostrich implements Bird {
-    public eat() { console.log('El Avestruz come hierbas.'); }
-    public fly() { 
-        // ¡Error! Violación de ISP.
-        throw new Error('Las avestruces NO vuelan.'); 
+// El Tucán puede volar pero no suele nadar
+export class Toucan implements IFlyingBird {
+    eat(): void {
+        console.log('El Tucán está comiendo frutas.');
     }
-    public swim() { console.log('El Avestruz puede nadar si es necesario.'); }
+
+    fly(): void {
+        console.log('El Tucán vuela sobre la selva.');
+    }
+}
+
+// El Colibrí vuela pero no nada
+export class Hummingbird implements IFlyingBird {
+    eat(): void {
+        console.log('El Colibrí busca néctar.');
+    }
+
+    fly(): void {
+        console.log('El Colibrí aletea rápidamente.');
+    }
+}
+
+// El Avestruz no vuela pero puede nadar
+export class Ostrich implements ISwimmingBird {
+    eat(): void {
+        console.log('El Avestruz come hierbas.');
+    }
+
+    swim(): void {
+        console.log('El Avestruz puede nadar si es necesario.');
+    }
+}
+
+// El Pinguino no vuela pero nada muy bien
+export class Penguin implements ISwimmingBird {
+    eat(): void {
+        console.log('El Pingüino busca peces.');
+    }
+
+    swim(): void {
+        console.log('El Pingüino nada ágilmente en el agua.');
+    }
+}
+
+// El Pato puede volar y nadar
+export class Duck implements IFlyingBird, ISwimmingBird {
+    eat(): void {
+        console.log('El Pato come plantas y pequeños insectos.');
+    }
+
+    fly(): void {
+        console.log('El Pato vuela en formación.');
+    }
+
+    swim(): void {
+        console.log('El Pato nada en el estanque.');
+    }
 }
