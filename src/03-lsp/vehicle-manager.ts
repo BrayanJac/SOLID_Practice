@@ -1,46 +1,87 @@
+//Interfaz base que define el contrato común para todos los vehículos
+export interface Vehicle {
+    getModel(): string;
+    getSpecialFeature(): string;
+}
 
-/**
- * VIOLACIÓN AL PRINCIPIO DE SUSTITUCIÓN DE LISKOV (LSP)
- * 
- * En la flota de la reserva, intentamos manejar diversos vehículos.
- * Sin embargo, el cliente se ve obligado a conocer los detalles internos
- * de cada marca para poder operar, rompiendo la transparencia de la abstracción.
- */
+//Implementaciones concretas que respetan el contrato Vehicle
+export class Tesla implements Vehicle {
+    constructor(private readonly model: string) {}
 
-export class Tesla { constructor(public model: string) {} }
-export class Audi  { constructor(public model: string) {} }
-export class Toyota{ constructor(public model: string) {} }
-export class Honda { constructor(public model: string) {} }
-export class Ford  { constructor(public model: string) {} }
-
-export class VehicleManager {
-
-    /**
-     * VIOLACIÓN: Este método rompe LSP y OCP. 
-     * Si agregamos una nueva marca (ej. Volvo), debemos venir aquí a agregar otro 'if' o 'case'.
-     * Además, no podemos tratar a todos los vehículos por igual.
-     */
-    static printVehicleDetails( vehicles: (Tesla | Audi | Toyota | Honda | Ford)[] ) {
-        
-        vehicles.forEach( vehicle => {
-
-            if( vehicle instanceof Tesla ) {
-                console.log('Tesla Model:', vehicle.model, 'Carga eléctrica al 100%');
-            }
-            if( vehicle instanceof Audi ) {
-                console.log('Audi Model:', vehicle.model, 'Tracción Quattro activada');
-            }
-            if( vehicle instanceof Toyota ) {
-                console.log('Toyota Model:', vehicle.model, 'Motor híbrido listo');
-            }
-            if( vehicle instanceof Honda ) {
-                console.log('Honda Model:', vehicle.model, 'VTEC activado');
-            }
-            if( vehicle instanceof Ford ) {
-                console.log('Ford Model:', vehicle.model, 'Built Tough');
-            }
-
-        });
+    getModel(): string {
+        return this.model;
     }
 
+    getSpecialFeature(): string {
+        return 'Carga eléctrica al 100%';
+    }
+}
+
+export class Audi implements Vehicle {
+    constructor(private readonly model: string) {}
+
+    getModel(): string {
+        return this.model;
+    }
+
+    getSpecialFeature(): string {
+        return 'Tracción Quattro activada';
+    }
+}
+
+export class Toyota implements Vehicle {
+    constructor(private readonly model: string) {}
+
+    getModel(): string {
+        return this.model;
+    }
+
+    getSpecialFeature(): string {
+        return 'Motor híbrido listo';
+    }
+}
+
+export class Honda implements Vehicle {
+    constructor(private readonly model: string) {}
+
+    getModel(): string {
+        return this.model;
+    }
+
+    getSpecialFeature(): string {
+        return 'VTEC activado';
+    }
+}
+
+export class Ford implements Vehicle {
+    constructor(private readonly model: string) {}
+
+    getModel(): string {
+        return this.model;
+    }
+
+    getSpecialFeature(): string {
+        return 'Built Tough';
+    }
+}
+
+export class Volvo implements Vehicle {
+    constructor(private readonly model: string) {}
+
+    getModel(): string {
+        return this.model;
+    }
+
+    getSpecialFeature(): string {
+        return 'Seguridad City Safety activada';
+    }
+}
+
+export class VehicleManager {
+    //Ahora acepta cualquier Vehicle, no necesita conocer tipos específicos.
+    static printVehicleDetails(vehicles: Vehicle[]): void {
+        vehicles.forEach(vehicle => {
+            console.log(`${vehicle.getModel()}: ${vehicle.getSpecialFeature()}`);
+        });
+    }
 }
